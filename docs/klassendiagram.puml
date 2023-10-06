@@ -1,0 +1,85 @@
+@startuml
+
+abstract class user{
+const brouwer<admin, brouwer>
+const bierliefhebber<admin, drinker>
+const admin<admin>
+}
+
+class securiteit {
+<admin, securiteit>
+
+}
+'users
+class brouwer<set> {
+let name
+let owner
+
+let street + huisnummer
+let zipcode
+let city
+let province/state
+let country
+let email
+let username
+let password
+
+function <brand> brands
+}
+
+class bierliefhebber <set>  {
+let firstname
+let lastname
+let email
+let username
+let password
+function brand-preference <brands>
+function <brands> brands
+
+}
+'bieren
+abstract class mijn_bieren {
+const products <products>
+const user rate <gradatie>
+}
+
+class products <set> {
+const name-beer
+const type<dropdown>
+const color<dropdown>
+const % <dropdown %>
+const tast <input>
+const IBU <input>
+
+const average rate <gradatie, text>
+
+let street + huisnummer
+let zipcode
+let city
+let province/state
+let country
+let email
+}
+
+abstract class upload <jepg> {
+img
+
+}
+abstract class gradatie <map>{
+const average user rate
+const user rate
+}
+
+mijn_bieren "0..N " <-D-> "0..N " products
+mijn_bieren "0..N " <-R- "0..N " user
+mijn_bieren "0..N " <-u- "0..N " upload
+
+
+securiteit "1" -D-> "0..N " user
+
+brands "0..N " <-U- "0..1" user
+
+gradatie "0..N " <-L- "0..1 " user
+gradatie "0..1 " -L-> "0..N " brands
+
+@enduml
