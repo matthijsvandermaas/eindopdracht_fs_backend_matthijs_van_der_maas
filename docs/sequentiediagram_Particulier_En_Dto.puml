@@ -1,0 +1,25 @@
+@startuml
+title Particulier Registratie Sequentiediagram
+
+actor Gebruiker
+activate ParticulierController
+participant ParticulierController
+participant ParticulierService
+activate ParticulierService
+database Database
+
+Gebruiker -> ParticulierController: Verzoek tot inschrijving
+ParticulierController -> ParticulierService: Creëer ParticulierDto
+ParticulierService -> Particulier: Maak nieuwe Particulier aan met gegevens uit ParticulierDto
+activate Particulier
+Particulier --> Database: Opslaan in de database (eindeproject_fs_matthijsvandermaas)
+deactivate Particulier
+activate Database
+Database --> ParticulierService
+deactivate Database
+ParticulierService --> ParticulierController: Bevestiging van succesvolle inschrijving
+deactivate ParticulierService
+ParticulierController --> Gebruiker: Inschrijving succesvol
+
+@enduml
+
