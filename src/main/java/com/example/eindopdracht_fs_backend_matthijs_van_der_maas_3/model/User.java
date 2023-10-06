@@ -54,4 +54,8 @@ public class User {
     public void setAuthorities(Set<Authority> authorities) {
         this.authorities = authorities;
     }
+
+
+    public Role[] getRoles() {
+    }
 }

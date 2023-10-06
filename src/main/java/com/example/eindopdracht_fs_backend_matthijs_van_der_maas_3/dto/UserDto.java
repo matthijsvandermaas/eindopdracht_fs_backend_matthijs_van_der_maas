@@ -2,9 +2,6 @@ package com.example.eindopdracht_fs_backend_matthijs_van_der_maas_3.dto;
 
 
 import com.example.eindopdracht_fs_backend_matthijs_van_der_maas_3.model.Authority;
-import org.springframework.security.core.GrantedAuthority;
-
-import java.util.Collection;
 import java.util.Set;
 
 public class UserDto {
