@@ -1,6 +1,9 @@
 package com.example.eindopdracht_fs_backend_matthijs_van_der_maas_3.config;
 
 
+import com.example.eindopdracht_fs_backend_matthijs_van_der_maas_3.Security.JwtRequestFilter;
+import com.example.eindopdracht_fs_backend_matthijs_van_der_maas_3.Security.JwtService;
+import com.example.eindopdracht_fs_backend_matthijs_van_der_maas_3.Security.UserDetailsService;
 import com.example.eindopdracht_fs_backend_matthijs_van_der_maas_3.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +14,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -20,18 +22,24 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class SpringSecurityConfig {
+private JwtRequestFilter jwtRequestFilter;
+    private JwtService jwtService;
+    private UserRepository userRepository;
 
-    private final JwtService jwtService;
-    private final UserRepository userRepository;
-
-    public SecurityConfig(JwtService jwtservice, UserRepository userRepository) {
+    public void SecurityConfig(JwtService jwtservice, UserRepository userRepository) {
         this.jwtService = jwtservice;
+        this.userRepository = userRepository;
+        this.jwtRequestFilter = jwtRequestFilter;
+    }
+
+    public SpringSecurityConfig(JwtService jwtService, UserRepository userRepository) {
+        this.jwtService = jwtService;
         this.userRepository = userRepository;
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) throws Exception {
+    public AuthenticationManager authenticationManager(org.springframework.security.core.userdetails.UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) throws Exception {
         var auth = new DaoAuthenticationProvider();
         auth.setPasswordEncoder(passwordEncoder);
         auth.setUserDetailsService(userDetailsService());
@@ -39,8 +47,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        return new MyUserDetailsService(this.userRepository);
+    public org.springframework.security.core.userdetails.UserDetailsService userDetailsService() {
+        return new UserDetailsService(this.userRepository);
     }
 
     @Bean

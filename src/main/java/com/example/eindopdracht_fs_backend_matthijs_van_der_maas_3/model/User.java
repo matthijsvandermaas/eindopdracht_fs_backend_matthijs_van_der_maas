@@ -2,60 +2,84 @@ package com.example.eindopdracht_fs_backend_matthijs_van_der_maas_3.model;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "users")
 public class User {
-
     @Id
-    @Column(nullable = false, unique = true)
-    private String username;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(nullable = false, length = 255)
+    private String username;
     private String password;
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_name")
+    )
+    private List<Role> roles;
 
-    @OneToMany(
-            targetEntity = Authority.class,
-            mappedBy = "username",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.EAGER)
-    private Set<Authority> authorities = new HashSet<>();
+    public User() {
+    }
 
-    @Column
-    private String email;
+    // Getters and setters
 
-    public String getUsername() { return username; }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
+
     public String getPassword() {
         return password;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }
 
+    public List<Role> getRoles() {
+        return roles;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email;}
+    public void setRoles(List<Role> roles) {
+        this.roles = (List<Role>) roles;
+    }
 
-    public Set<Authority> getAuthorities() { return authorities; }
+    // Method to manage roles
+
+    public void addRole(Role role) {
+        roles.add(role);
+        role.getUsers().add(this);
+    }
+
+    public void removeRole(Role role) {
+        roles.remove(role);
+        role.getUsers().remove(this);
+    }
+
     public void addAuthority(Authority authority) {
-        this.authorities.add(authority);
-    }
-    public void removeAuthority(Authority authority) {
-        this.authorities.remove(authority);
     }
 
-    public void setAuthorities(Set<Authority> authorities) {
-        this.authorities = authorities;
+    public void removeAuthority(Authority authorityToRemove) {
     }
 
-
-    public Role[] getRoles() {
+    public Collection<Object> getAuthorities() {
+        return getAuthorities();
     }
 }

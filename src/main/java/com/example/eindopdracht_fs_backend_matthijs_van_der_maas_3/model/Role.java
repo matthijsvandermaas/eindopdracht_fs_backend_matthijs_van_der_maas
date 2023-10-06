@@ -1,9 +1,6 @@
 package com.example.eindopdracht_fs_backend_matthijs_van_der_maas_3.model;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
 
+import jakarta.persistence.*;
 
 import java.util.List;
 
@@ -17,7 +14,30 @@ public class Role {
     @ManyToMany(mappedBy = "roles")
     private List<User> users;
 
+
+    public Role() {
+
+    }
+
+    public Role(String roleName, List<User> users) {
+        this.roleName = roleName;
+        this.users = users;
+    }
+    // Getters and setters
+
     public String getRoleName() {
         return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 }

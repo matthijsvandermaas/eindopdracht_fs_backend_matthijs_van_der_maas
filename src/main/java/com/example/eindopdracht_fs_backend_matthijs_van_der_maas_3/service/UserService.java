@@ -35,7 +35,7 @@ public class UserService {
 
     public UserDto getUser(String username) {
         UserDto dto = new UserDto();
-        Optional<User> user = userRepository.findById(username);
+        Optional<User> user = userRepository.findById(Long.valueOf(username));
         if (user.isPresent()){
             dto = fromUser(user.get());
         }else {
@@ -45,7 +45,7 @@ public class UserService {
     }
 
     public boolean userExists(String username) {
-        return userRepository.existsById(username);
+        return userRepository.existsById(Long.valueOf(username));
     }
 
     public String createUser(UserDto userDto) {
@@ -56,35 +56,35 @@ public class UserService {
     }
 
     public void deleteUser(String username) {
-        userRepository.deleteById(username);
+        userRepository.deleteById(Long.valueOf(username));
     }
 
     public void updateUser(String username, UserDto newUser) {
-        if (!userRepository.existsById(username)) throw new RecordNotFoundException();
-        User user = userRepository.findById(username).get();
+        if (!userRepository.existsById(Long.valueOf(username))) throw new RecordNotFoundException();
+        User user = userRepository.findById(Long.valueOf(username)).get();
         user.setPassword(newUser.getPassword());
         userRepository.save(user);
     }
 
     public Set<Authority> getAuthorities(String username) {
-        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
-        User user = userRepository.findById(username).get();
+        if (!userRepository.existsById(Long.valueOf(username))) throw new UsernameNotFoundException(username);
+        User user = userRepository.findById(Long.valueOf(username)).get();
         UserDto userDto = fromUser(user);
         return userDto.getAuthorities();
     }
 
     public void addAuthority(String username, String authority) {
 
-        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
-        User user = userRepository.findById(username).get();
+        if (!userRepository.existsById(Long.valueOf(username))) throw new UsernameNotFoundException(username);
+        User user = userRepository.findById(Long.valueOf(username)).get();
         user.addAuthority(new Authority(username, authority));
         userRepository.save(user);
     }
 
     public void removeAuthority(String username, String authority) {
-        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
-        User user = userRepository.findById(username).get();
-        Authority authorityToRemove = user.getAuthorities().stream().filter((a) -> a.getAuthority().equalsIgnoreCase(authority)).findAny().get();
+        if (!userRepository.existsById(Long.valueOf(username))) throw new UsernameNotFoundException(username);
+        User user = userRepository.findById(Long.valueOf(username)).get();
+        Authority authorityToRemove = (Authority) user.getAuthorities().stream().filter((a) -> a.toString().equalsIgnoreCase(authority)).findAny().get();
         user.removeAuthority(authorityToRemove);
         userRepository.save(user);
     }
@@ -95,8 +95,6 @@ public class UserService {
 
         dto.username = user.getUsername();
         dto.password = user.getPassword();
-        dto.email = user.getEmail();
-        dto.authorities = user.getAuthorities();
 
         return dto;
     }
@@ -106,7 +104,6 @@ public class UserService {
         var user = new User();
         user.setUsername(userDto.getUsername());
         user.setPassword(userDto.getPassword());
-        user.setEmail(userDto.getEmail());
 
         return user;
     }
