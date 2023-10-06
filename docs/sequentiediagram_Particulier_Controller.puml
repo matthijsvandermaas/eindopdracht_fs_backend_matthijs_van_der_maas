@@ -1,0 +1,31 @@
+@startuml
+
+participant Client
+participant ParticulierController
+participant ParticulierService
+participant ParticulierRepository
+
+Client -> ParticulierController: POST /particulieren/inschrijving
+activate ParticulierController
+
+ParticulierController -> ParticulierService: createParticulier(particulierDto)
+activate ParticulierService
+
+ParticulierService -> Particulier: Maak nieuw Particulier object
+activate Particulier
+
+ParticulierService -> Particulier: Set First Name, Last Name, Email, UserName
+ParticulierService -> Particulier: Hash het wachtwoord
+ParticulierService -> Particulier: Set Roles
+ParticulierService -> ParticulierRepository: Opslaan in de database
+activate ParticulierRepository
+
+ParticulierRepository --> ParticulierService: Bevestiging van opslaan
+
+ParticulierService --> ParticulierController: Bevestiging van inschrijving
+deactivate ParticulierService
+
+ParticulierController --> Client: HTTP 200 OK met Inschrijvingsbevestiging
+deactivate ParticulierController
+
+@enduml
